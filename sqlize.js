@@ -50,4 +50,9 @@ async function testConnection() {
 // Create Critic object
 const Movie = MovieModel(sqlize, Sequelize);
 
+sqlize.sync({ force: true })
+  .then(() => {
+    console.log(`Database & tables created!`)
+  })
+
 module.exports = Movie;
