@@ -3,7 +3,7 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 const MovieModel = require('./models/movie');
 // const ReviewModel = require('./models/review');
-// const CriticModel = require('./models/critic');
+const CriticModel = require('./models/critic');
 
 const sqlize = new Sequelize('sqliz_test', 'root', process.env.DB_PW, {
   host: 'localhost',
@@ -49,10 +49,14 @@ async function testConnection() {
 
 // Create Critic object
 const Movie = MovieModel(sqlize, Sequelize);
+const Critic = CriticModel(sqlize, Sequelize);
 
 sqlize.sync({ force: true })
   .then(() => {
     console.log(`Database & tables created!`)
   })
 
-module.exports = Movie;
+module.exports = {
+  Movie,
+  Critic
+};

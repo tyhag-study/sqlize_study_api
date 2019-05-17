@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const Movie = require('./sqlize.js');
+const { Movie, Critic } = require('./sqlize.js');
 
 const app = express();
 
@@ -13,26 +13,44 @@ app.get('/', (req, res) => {
 })
 
 app.post('/movie', (req, res) => {
-
-  console.log(req.body);
   // Expect JSON with 'name' a string amd 'year_released' an integer
+  // Validate request body
   let name = typeof (req.body.name) == 'string' && req.body.name.length > 0 ? req.body.name : false;
   let yearReleased = typeof (req.body.year_released) == 'number' && req.body.year_released.toString().length > 0 ? req.body.year_released : false;
 
   if (name && yearReleased) {
-    console.log('validated');
-
+    // Function to create a new movie
     async function createNewMovie() {
       let createdMovie = await Movie.create(req.body);
-      console.log('createdMovie:');
-      console.log(createdMovie.dataValues);
-      res.sendStatus(200);
+      console.log('Created new movie.');
+      res.status(200).send(createdMovie.dataValues);
     }
+    // Create a new movie
     createNewMovie();
+  } else {
+    res.status(400).send('Movie name and/or yearReleased parameter(s) was invalid.');
   }
-
 })
 
+app.post('/critic', (req, res) => {
+  console.log(req.body)
+  // Expect JSON with 'name' a string
+  // Validate request body
+  let name = typeof (req.body.name) == 'string' && req.body.name.length > 0 ? req.body.name : false;
+
+  if (name) {
+    // Function to create new critic
+    async function createNewCritic() {
+      let createdCritic = await Critic.create(req.body);
+      console.log('Created new critic.');
+      res.status(200).send(createdCritic.dataValues);
+    }
+    // Create new critic
+    createNewCritic();
+  } else {
+    res.status(400).send('Critic name parameter was invalid.');
+  }
+})
 
 app.listen(3000, () => {
   console.log('App listening on port 3000.');
