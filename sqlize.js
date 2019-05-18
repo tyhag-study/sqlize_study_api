@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const Sequelize = require('sequelize');
 const MovieModel = require('./models/movie');
-// const ReviewModel = require('./models/review');
+const ReviewModel = require('./models/review');
 const CriticModel = require('./models/critic');
 
 const sqlize = new Sequelize('sqliz_test', 'root', process.env.DB_PW, {
@@ -50,6 +50,10 @@ async function testConnection() {
 // Create Critic object
 const Movie = MovieModel(sqlize, Sequelize);
 const Critic = CriticModel(sqlize, Sequelize);
+const Review = ReviewModel(sqlize, Sequelize);
+
+Review.hasOne(Critic);
+Review.hasOne(Movie);
 
 sqlize.sync({ force: true })
   .then(() => {
@@ -58,5 +62,6 @@ sqlize.sync({ force: true })
 
 module.exports = {
   Movie,
-  Critic
+  Critic,
+  Review
 };

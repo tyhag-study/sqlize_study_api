@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { Movie, Critic } = require('./sqlize.js');
+const { Movie, Critic, Review } = require('./sqlize.js');
 
 const app = express();
 
@@ -43,6 +43,21 @@ app.post('/movie', (req, res) => {
     createNewMovie();
   } else {
     res.status(400).send('Movie name and/or yearReleased parameter(s) was invalid.');
+  }
+})
+
+
+// CRITIC ROUTES
+
+app.get('/critic/:id', async (req, res) => {
+  try {
+    let retrievedCritic = await Critic.findAll({
+      where: { id: req.params.id }
+    })
+    console.log(retrievedCritic[0].dataValues);
+    res.status(200).send(retrievedCritic[0]);
+  } catch (error) {
+    res.status(400).send('Error fetching critic.');
   }
 })
 
