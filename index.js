@@ -12,6 +12,20 @@ app.get('/', (req, res) => {
   res.send('Hello');
 })
 
+// MOVIE ROUTES
+
+app.get('/movie/:id', async (req, res) => {
+  try {
+    let retrievedMovie = await Movie.findAll({
+      where: { id: req.params.id }
+    })
+    console.log(retrievedMovie[0].dataValues);
+    res.status(200).send(retrievedMovie[0]);
+  } catch (error) {
+    res.status(400).send('Error fetching movie.');
+  }
+})
+
 app.post('/movie', (req, res) => {
   // Expect JSON with 'name' a string amd 'year_released' an integer
   // Validate request body
