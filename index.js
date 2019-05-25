@@ -107,6 +107,10 @@ app.post('/review', (req, res) => {
       }
     }
     createNewReview();
+  } else {
+    res.status(400).send(
+      { 'error': 'Invalid parameters. movieId, criticId, or reviewText did not match expected values.' }
+    )
   }
 
 })
