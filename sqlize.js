@@ -52,13 +52,22 @@ const Movie = MovieModel(sqlize, Sequelize);
 const Critic = CriticModel(sqlize, Sequelize);
 const Review = ReviewModel(sqlize, Sequelize);
 
-Review.hasOne(Critic);
-Review.hasOne(Movie);
+Review.belongsTo(Critic);
+Review.belongsTo(Movie);
 
-sqlize.sync({ force: true })
-  .then(() => {
-    console.log(`Database & tables created!`)
-  })
+// Sync (and reset) db
+sqlize.query('SET FOREIGN_KEY_CHECKS = 0')
+.then(function(){
+    return sqlize.sync({ force: true });
+})
+.then(function(){
+    return sqlize.query('SET FOREIGN_KEY_CHECKS = 1')
+})
+.then(function(){
+    console.log('Database synchronised.');
+}, function(err){
+    console.log(err);
+});
 
 module.exports = {
   Movie,

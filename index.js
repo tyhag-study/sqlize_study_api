@@ -30,7 +30,7 @@ app.post('/movie', (req, res) => {
   // Expect JSON with 'name' a string amd 'year_released' an integer
   // Validate request body
   let name = typeof (req.body.name) == 'string' && req.body.name.length > 0 ? req.body.name : false;
-  let yearReleased = typeof (req.body.year_released) == 'number' && req.body.year_released.toString().length > 0 ? req.body.year_released : false;
+  let yearReleased = typeof (req.body.yearReleased) == 'number' ? req.body.yearReleased : false;
 
   if (name && yearReleased) {
     // Function to create a new movie
@@ -80,6 +80,38 @@ app.post('/critic', (req, res) => {
     res.status(400).send('Critic name parameter was invalid.');
   }
 })
+
+// REVIEW ROUTES
+
+app.post('/review', (req, res) => {
+  console.log(req.body);
+  // Expect JSON with movie_id a number, critic_id a number, review_body a string, optional rating a number between 1 and 5
+  // Validate request body
+  let movieId = typeof (req.body.movieId) == 'number' ? req.body.movieId : false;
+  let criticId = typeof (req.body.criticId) == 'number' ? req.body.criticId : false;
+  let reviewText = typeof (req.body.reviewText) == 'string' && req.body.reviewText.length > 0 ? req.body.reviewText : false;
+
+  if (movieId && criticId && reviewText) {
+    async function createNewReview() {
+      let testReturn = {};
+      let reviewedMovie = await Movie.findAll({ where: { id: movieId } });
+      let criticSubmittingReview = await Critic.findAll({ where: { id: criticId } });
+
+      if (reviewedMovie.length > 0 && criticSubmittingReview.length > 0) {
+        let newlyCreatedMovie = await Review.create(req.body);
+        res.status(200).send(newlyCreatedMovie.dataValues);
+      } else {
+        res.status(400).send(
+          { 'error': 'Invalid parameters, or movie and/or critic not found.' }
+        )
+      }
+    }
+    createNewReview();
+  }
+
+})
+
+
 
 app.listen(3000, () => {
   console.log('App listening on port 3000.');

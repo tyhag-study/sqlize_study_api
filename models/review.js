@@ -1,13 +1,10 @@
-module.exports = (sequelize, type) {
+module.exports = (sequelize, type) => {
   return sequelize.define('review', {
     id: {
       type: type.INTEGER,
-      primarykey: true,
+      primaryKey: true,
       autoIncrement: true
     },
-    text: type.STRING(1000)
-    rating: {
-      type: type.INTEGER,
-      defaultValue: null
+    reviewText: type.STRING(1000)
   })
 }
